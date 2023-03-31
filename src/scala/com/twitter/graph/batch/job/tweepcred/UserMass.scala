@@ -12,9 +12,6 @@ case class UserMassInfo(userId: Long, mass: Double)
 object UserMass {
 
   private val currentTimestamp = Time.now.inMilliseconds
-  private val constantDivisionFactorGt_threshFriendsToFollowersRatioUMass = 5.0
-  private val threshAbsNumFriendsUMass = 500
-  private val threshFriendsToFollowersRatioUMass = 0.6
   private val deviceWeightAdditive = 0.5
   private val ageWeightAdditive = 0.2
   private val restrictedWeightMultiplicative = 0.1
@@ -51,19 +48,7 @@ object UserMass {
           score
         }
 
-      val friendsToFollowersRatio = (1.0 + numFollowings) / (1.0 + numFollowers)
-      val adjustedMass =
-        if (numFollowings > threshAbsNumFriendsUMass &&
-          friendsToFollowersRatio > threshFriendsToFollowersRatioUMass) {
-          mass / scala.math.exp(
-            constantDivisionFactorGt_threshFriendsToFollowersRatioUMass *
-              (friendsToFollowersRatio - threshFriendsToFollowersRatioUMass)
-          )
-        } else {
-          mass
-        }
-
-      Some(UserMassInfo(userId, adjustedMass))
+      Some(UserMassInfo(userId, mass))
     }
   }
 }
